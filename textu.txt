@@ -1,0 +1,280 @@
+[12/05, 11:58 am] Subburam M: import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+
+data = {
+    'power_rating': [16.46, 12.52, 7.66, 21.09, 24.43, 32.03, 21.36, 22.05, 19.8, 48.45, 12.53, 24.24, 19.28],
+    'weight_copper': [34.69, 28.78, 21.48, 41.64, 46.64, 58.04, 42.04, 43.08, 39.7, 82.68, 28.79, 46.36, 38.92]
+}
+df = pd.DataFrame(data)
+
+df['target'] = df['weight_copper'].apply(lambda x: "Low" if x < 40 else "High")
+display(df)
+X = df[['power_rating']] # Features must be a 2D array/DataFrame
+y = df['target']         # Target is a 1D array/Series
+
+model = RandomForestClassifier(n_estimators=100)
+model.fit(X, y)
+
+prediction = model.predict([[25]])
+result = "Low" if prediction[0] == 0 else "High"
+print(f"Prediction for 25KW: {result}")
+[12/05, 11:58 am] Subburam M: import pandas as pd
+from sklearn.datasets import load_iris
+from sklearn.tree import DecisionTreeClassifier
+
+iris = load_iris()
+X = iris.data  # Features: Sepal length/width, Petal length/width
+y = iris.target # Target: Species (Setosa, Versicolor, Virginica)
+
+model = DecisionTreeClassifier(criterion='entropy', random_state=42)
+model.fit(X, y)
+prediction = model.predict([[3.1, 5.3, 2.4, 0.2]])
+
+species_name = iris.target_names[prediction][0]
+print(f"The new sample is classified as: {species_name}")
+[12/05, 11:59 am] Subburam M: import pandas as pd
+from sklearn.neighbors import KNeighborsClassifier
+
+data = {
+    'Height': [188, 178, 164, 192, 157, 170, 188, 168, 172, 160],
+    'Weight': [67, 44, 86, 88, 69, 85, 91, 44, 51, 55],
+    'Class': [0, 0, 1, 0, 0, 1, 1, 0, 0, 0]
+}
+df = pd.DataFrame(data)
+
+X = df[['Height', 'Weight']]
+y = df['Class']
+model = KNeighborsClassifier(n_neighbors=3)
+model.fit(X, y)
+df['Predicted'] = model.predict(X)
+
+correct = df[df['Class'] == df['Predicted']]
+wrong = df[df['Class'] != df['Predicted']]
+
+print("--- Correct Predictions ---")
+print(correct)
+
+print("\n--- Wrong Predictions ---")
+print(wrong)
+[12/05, 11:59 am] Subburam M: import pandas as pd
+from sklearn.neighbors import KNeighborsClassifier
+
+data = {
+    'Fault_Current': [2.72, 3.52, 1.34, 5.67, 7.29, 5.5, 2.11, 3.67, 7.17, 4.23, 0.98, 0.32, 0.25, 7.05],
+    'Target':        [0,    0,    0,    0,    1,    0,   0,    0,    1,    0,    0,    1,    0,    1]
+}
+df = pd.DataFrame(data)
+
+X = df[['Fault_Current']] 
+y = df['Target']
+model = KNeighborsClassifier(n_neighbors=3)
+model.fit(X, y)
+prediction = model.predict([[1.5]])
+
+result = "Fault Detected" if prediction[0] == 1 else "Normal Operation"
+print(f"Reading: 8.0 | Status: {result}")
+[12/05, 12:00 pm] Subburam M: import pandas as pd
+from sklearn.linear_model import LinearRegression
+import matplotlib.pyplot as plt
+
+data = {
+    'year': [2010, 2006, 2005, 2007, 2001, 2009, 2002, 2004, 2003, 2005],
+    'cost': [49483, 30520, 27911, 37709, 8816, 46048, 10623, 21922, 14973, 40357]
+}
+df = pd.DataFrame(data)
+
+X = df[['year']] # Input: Year (2D)
+y = df['cost']   # Output: Cost (1D)
+model = LinearRegression()
+model.fit(X, y)
+
+new_year = [[2011]]
+predicted_price = model.predict(new_year)
+
+print(f"Predicted price for the year 2011: ${predicted_price[0]:.2f}")
+
+plt.scatter(X, y, color='blue') # Real data points
+plt.plot(X, model.predict(X), color='red') # Regression line
+plt.xlabel('Year')
+plt.ylabel('Cost')
+plt.show()
+[12/05, 12:02 pm] Subburam M: import pandas as pd
+from sklearn.linear_model import LinearRegression
+
+data = {
+    'Year': [2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023],
+    'Peak_Load': [890, 990, 1200, 1500, 1750, 2000, 2300, 2750, 3000, 3500, 3800, 4500, 4800]
+}
+df = pd.DataFrame(data)
+
+X = df[['Year']]
+y = df['Peak_Load']
+model = LinearRegression()
+model.fit(X, y)
+
+predicted_load = model.predict([[2024]])
+
+print(f"Projected Peak Load for 2024: {predicted_load[0]:.2f} MW")
+[12/05, 12:03 pm] Subburam M: import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+
+# 1. Prepare the dataset
+data = {
+    'Month': [4, 6, 7, 10, 12, 16, 20, 22, 24],
+    'Load': [40, 50, 80, 100, 120, 140, 300, 340, 380],
+    'Condition': [0, 0, 0, 0, 0, 0, 1, 1, 1]  # 0: no, 1: yes
+}
+
+df = pd.DataFrame(data)
+X = df[['Month', 'Load']]
+y = df['Condition']
+
+# 2. Initialize and train the Random Forest
+# Using a small number of estimators due to the tiny dataset size
+model = RandomForestClassifier(n_estimators=10, random_state=42)
+model.fit(X, y)
+
+# 3. Test a new prediction (e.g., Month 18, Load 250)
+new_data = [[18, 250]]
+prediction = model.predict(new_data)
+result = "yes" if prediction[0] == 1 else "no"
+
+print(f"Prediction for Month 18, Load 250Mw: {result}")
+[12/05, 12:03 pm] Subburam M: import numpy as np
+#Define the FIND-S algorithm
+def find_s_algorithm(arr):
+    hypothesis = [None]*(len(arr[0])-1) #Initialize the hypothesis to the most specific hypothesis
+    print(hypothesis)
+    for example in arr:
+        if example[-1]=='Yes':
+            for i in range(len(hypothesis)):
+                if hypothesis[i] is None:
+                    hypothesis[i]=example[i]
+                elif hypothesis[i]!=example[i]:
+                    hypothesis[i]='?'
+    return hypothesis
+
+training_data = [
+    ['Sunny', 'Warm', 'Normal', 'Strong', 'Warm', 'Same', 'Yes'],
+    ['Sunny', 'Warm', 'High', 'Strong', 'Warm', 'Same', 'Yes'],
+    ['Rainy', 'Cold', 'High', 'Strong', 'Warm', 'Change', 'No'],
+    ['Sunny', 'Warm', 'High', 'Strong', 'Cool', 'Change', 'Yes']
+]
+
+#Run the FIND-S algorithm
+hypothesis = find_s_algorithm(training_data)
+#Print the hypothesis
+print("The most specific hypothesis is:", hypothesis)
+[12/05, 12:04 pm] Subburam M: % Updated Digital Twin with Colleague's Logic & Your Dimensions
+numSamples = 1000;
+windspeed_list = 10 + 5 * randn(numSamples, 1); 
+
+% Your Specific Parameters
+bladeLength = 60;      % Updated to your spec
+turbineHeight = 100;   % meter (Stored for metadata)
+ratedPower = 4000;     % Increased capacity for a 60m blade
+cutInWindSpeed = 3;
+cutOutWindSpeed = 25;
+rho = 1.225;
+
+% Logic: Calculate theoretical power first
+area = pi * bladeLength^2;
+powerOutput = 0.5 * rho * area * (windspeed_list.^3) * 1e-3;
+
+% Apply Constraints (The "If-Else" equivalent using indexing)
+powerOutput(windspeed_list < cutInWindSpeed) = 0;      % Too slow
+powerOutput(windspeed_list > cutOutWindSpeed) = 0;     % Too fast (Safety)
+powerOutput(powerOutput > ratedPower) = ratedPower;    % Cap at Max Capacity
+
+% Visualization
+scatter(windspeed_list, powerOutput, 10, 'filled', 'MarkerFaceAlpha', 0.5);
+grid on; hold on;
+line([cutInWindSpeed cutInWindSpeed], [0 ratedPower], 'Color', 'r', 'LineStyle', '--');
+title('Digital Twin: Constrained Power Curve (60m Blades)');
+xlabel('Wind Speed (m/s)'); ylabel('Power Output (kW)');
+[12/05, 12:05 pm] Subburam M: % --- System Setup ---
+R = 0.1; L = 1e-3; C = 10e-6; Vout = 5;
+G = tf([Vout*L/R, Vout*(1-R*C/L), 0], [L*C, R*C, 1]);
+
+% --- Optimization Settings ---
+N = 500; % Total trials (num_iterations * num_ants)
+results = zeros(N, 3); % [Score, Kp, Ki]
+
+% --- vectorized "Ant" Search ---
+for i = 1:N
+    Kp = rand; Ki = rand; % Random parameters
+    sys = feedback(tf([Kp, Ki], [1, 0]) * G, 1);
+    S = stepinfo(sys);
+    
+    % Use 'isfield' or check for NaN to prevent errors with unstable systems
+    score = S.SettlingTime + S.Overshoot; 
+    if isnan(score), score = inf; end
+    results(i, :) = [score, Kp, Ki];
+end
+
+% --- Find and Plot Best Result ---
+[~, idx] = min(results(:,1));
+best = results(idx, :);
+
+fprintf('Best Kp: %.4f | Best Ki: %.4f | Score: %.4f\n', best(2), best(3), best(1));
+step(feedback(tf(best(2:3), [1, 0]) * G, 1));
+[12/05, 12:06 pm] Subburam M: class PVModule:
+    def __init__(self, V_oc, I_sc, V_mp, I_mp):
+        self.V_oc = V_oc    # Open circuit voltage (V)
+        self.I_sc = I_sc    # Short circuit current (A)
+        self.V_mp = V_mp    # Voltage at max power point (V)
+        self.I_mp = I_mp    # Current at max power point (A)
+
+    def calculate_output_voltage(self, irradiance, temperature):
+        # Linear model: voltage drops as irradiance and temperature increase
+        V = self.V_oc - (irradiance / 1000) * 0.1 - (temperature - 25) * 0.05
+        return V
+
+class MPPTController:
+    def __init__(self, V_ref):
+        self.V_ref = V_ref
+
+    def track_voltage(self, pv_module, irradiance, temperature):
+        # Call the module's method to get the actual voltage
+        V_out = pv_module.calculate_output_voltage(irradiance, temperature)
+        error = self.V_ref - V_out
+        return error
+
+# --- Simulation Parameters ---
+V_ref = 36
+irradiance = 1000
+temperature = 25
+
+# Create objects
+pv_module = PVModule(V_oc=36, I_sc=8.3, V_mp=29, I_mp=7.6)
+controller = MPPTController(V_ref)
+
+# Run simulation
+error = controller.track_voltage(pv_module, irradiance, temperature)
+print(f"Error: {error}")
+[12/05, 12:06 pm] Subburam M: % --- System Setup ---
+R = 0.1; L = 1e-3; C = 10e-6; Vout = 5;
+G = tf([Vout*L/R, Vout*(1-R*C/L), 0], [L*C, R*C, 1]);
+
+% --- Optimization Settings ---
+N = 500; % Total trials (num_iterations * num_ants)
+results = zeros(N, 3); % [Score, Kp, Ki]
+
+% --- vectorized "Ant" Search ---
+for i = 1:N
+    Kp = rand; Ki = rand; % Random parameters
+    sys = feedback(tf([Kp, Ki], [1, 0]) * G, 1);
+    S = stepinfo(sys);
+    
+    % Use 'isfield' or check for NaN to prevent errors with unstable systems
+    score = S.SettlingTime + S.Overshoot; 
+    if isnan(score), score = inf; end
+    results(i, :) = [score, Kp, Ki];
+end
+
+% --- Find and Plot Best Result ---
+[~, idx] = min(results(:,1));
+best = results(idx, :);
+
+fprintf('Best Kp: %.4f | Best Ki: %.4f | Score: %.4f\n', best(2), best(3), best(1));
+step(feedback(tf(best(2:3), [1, 0]) * G, 1));
